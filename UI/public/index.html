@@ -8,9 +8,10 @@
   <script type="text/javascript" src="js/loading-bar.js" charset="utf-8"></script>
   <script type="text/javascript" src="js/gauge.min.js" charset="utf-8"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="/mqtt.js"></script>
 </head>
 
-<body class="d-flex flex-column h-100">
+<body class="d-flex flex-column">
   <!-- Fixed Navbar -->
   <header>
     <nav class="navbar navbar-static-top navbar-expand-md navbar-light bg-light">
@@ -36,9 +37,9 @@
   </header>
 
   <!-- Begin page content -->
-  <main role="main" class="flex-shrink-0 flex-grow-1">
-    <div class="container">
-      <div id="carouselExampleControls" class="carousel slide" data-ride="carousel" data-interval="false">
+  <main role="main" class=" d-flex flex-column flex-shrink-0 flex-grow-1 h-100 w-100  container">
+    <!-- <div class="container h-100 flex-shrink-0 flex-grow-1 fill"> -->
+      <div id="carouselExampleControls" class="carousel slide w-100 " data-ride="carousel" data-interval="false">
         <div class="carousel-inner">
 
           <!-- Bagian Sensors -->
@@ -123,11 +124,19 @@
       </div>
 
 
-
-      <div class="graph row">
-        <canvas id="canvas"></canvas>
+      <div class="graph row h-100 flex-fill d-flex flex-column">
+        <div class="graph col-md-4 flex-fill h-100 nopadding ">
+          <canvas id="canvas1"></canvas>
+        </div>
+        <div class="graph col-md-4 flex-fill h-100 nopadding ">
+          <canvas id="canvas2"></canvas>
+        </div>
+        <div class="graph col-md-4 flex-fill h-100 nopadding ">
+          <canvas id="canvas3"></canvas>
+        </div>
       </div>
-    </div>
+      <!-- <div class="test flex-fill"></div> -->
+    <!-- </div> -->
   </main>
   <!-- <div class="ledstatus">
     <p class="container_title">LED STATUS</p>
