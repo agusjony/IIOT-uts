@@ -17,13 +17,13 @@ client.on('connect', function() {
         value1= (60+(n1+1)*40).toFixed(2)
         value2= (20+(n2+1)*10).toFixed(2)
         value3= (700+(n3+1)*400).toFixed(2)
-        client.publish('topic/temperature', value1.toString(), {
+        client.publish('humidity', value1.toString(), {
             retain: false
         });
-        client.publish('topic/humidity', value2.toString(), {
+        client.publish('temperature', value2.toString(), {
             retain: false
         });
-        client.publish('topic/intensity', value3.toString(), {
+        client.publish('intensity', value3.toString(), {
             retain: false // ga dikirim terus2an
         });
         console.log("published message");

@@ -24,10 +24,13 @@
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item ">
-            <a class="nav-link" href="/index.html">SENSORs</a>
+            <a class="nav-link" href="./index.html">SENSORs</a>
           </li>
           <li class="nav-item active">
             <a class="nav-link" href="#">LEDs <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./about.html">About</a>
           </li>
         </ul>
       </div>
@@ -43,7 +46,7 @@
       </div>
       <!-- Contents -->
       <div id="panel" class="row flex-grow-1 flex-fill">
-        <!-- LED -->
+        <!-- Mode -->
         <div class="col-md-2 flex-fill h-100 w-100 justify-content-center align-items-center overflow-auto">
           <label class="switch">
             <input id="modeButton" type="checkbox">
@@ -56,14 +59,14 @@
           </label>
         </div>
 
-        <!-- Temperature -->
+        <!-- LEDs -->
         <div id="led" class="col-md-5 flex-fill d-flex flex-column justify-content-center align-items-center overflow-auto">
           <div id="ledstatus1" class="button btn-primary indicators" onclick="changeLEDButton(1)">
-            <label for="ledstatus1"> LED1 </label>
+            <label for="ledstatus1"> LED </label>
           </div>
         </div>
 
-        <!-- Brightness -->
+        <!-- RGBs -->
         <div id="rgb" class="col-md-5 align-items-center colorPicker" style="text-align:center">
           <fieldset>
             <label for="r">R</label>
@@ -89,6 +92,7 @@
 
       </div>
 
+      <!-- Threshold -->
       <div id="threshold_cont" class="row">
         <div class="col-md-6 set_threshold">
               <label for="thresh" class="nopadding">~~~Threshold~~~</label>
