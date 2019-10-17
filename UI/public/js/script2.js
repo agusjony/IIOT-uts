@@ -23,7 +23,7 @@ client.on('message', function(topic, message) {
             break;
         case 'threshold':
             threshold_val = message.toString().removeCharAt(1);
-            console.log(threshold_val);
+            // console.log(threshold_val);
             document.getElementById('threshold_val').innerHTML = threshold_val;
     }
 })
