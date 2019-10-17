@@ -49,7 +49,7 @@ function changeValue(value, value_id) {
     switch (value_id) {
         case 'humidity':
             insertData(chart1, value);
-            gauge.set(value * 100);
+            gauge.set(value);
             sensor_number = 0;
             break;
         case 'temperature':
