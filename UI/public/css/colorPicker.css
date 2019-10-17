@@ -1,0 +1,42 @@
+fieldset {
+  border: none;
+}
+
+output {
+  display: inline-block;
+  min-width: 2.5em;
+}
+
+label, output {
+  padding: 2px 9px;
+  border-radius: 3px;
+  font-family: 'Roboto', sans-serif;
+  color: #000;
+  font-size: 1.1em;
+}
+
+label[for=r], output[for=r] {
+  background-color: #f00;
+}
+
+label[for=g], output[for=g] {
+  background-color: #0f0;
+}
+
+label[for=b], output[for=b] {
+  background-color: #00f;
+}
+
+#rgb_button {
+  margin-top: 10px;
+  background-color: white;
+  width: 60%;
+}
+
+.colorPicker {
+  /* display: block; */
+  padding-top: 50px;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  border-left: 2px solid #3498DB;
+}

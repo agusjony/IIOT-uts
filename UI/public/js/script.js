@@ -2,8 +2,8 @@
 var maxData = 300;
 
 // Global Variables
-var ledstate = [false, false, false, false]
-var dataDump = [];
+// var ledstate = [false, false, false, false]
+// var dataDump = [];
 var sensor_average = [0, 0, 0];
 
 const average = arr => arr.reduce((p, c) => p + c, 0) / arr.length;
@@ -15,39 +15,26 @@ const varToString = varObj => Object.keys(varObj);
 var client = mqtt.connect();
 
 client.on('connect', function() {
-    client.subscribe('topic/sensor1')
-    client.subscribe('topic/sensor2')
-    client.subscribe('topic/sensor3')
-    client.subscribe('topic/ledstatus1')
-    client.subscribe('topic/ledstatus2')
-    client.subscribe('topic/ledstatus3')
-    client.subscribe('topic/ledstatus4')
+    client.subscribe('temperature')
+    client.subscribe('humidity')
+    client.subscribe('intensity')
 })
 
 client.on('message', function(topic, message) {
     //console.log('received message on %s: %s', topic, message)
     switch (topic) {
-        case 'topic/temperature':
+        case 'humidity':
             changeValue(message, "humidity");
             break;
-        case 'topic/humidity':
+        case 'temperature':
             changeValue(message, "temperature");
             break;
-        case 'topic/intensity':
+        case 'intensity':
             changeValue(message, "brightness");
             break;
-        case 'topic/ledstatus1':
-            changeLED(message, 1);
-            break;
-        case 'topic/ledstatus2':
-            changeLED(message, 2);
-            break;
-        case 'topic/ledstatus3':
-            changeLED(message, 3);
-            break;
-        case 'topic/ledstatus4':
-            changeLED(message, 4);
-            break;
+        // case 'led':
+        //     changeLED(message, 1);
+        //     break;
     }
 })
 
@@ -72,7 +59,7 @@ function changeValue(value, value_id) {
             break;
         case 'brightness':
             insertData(chart3, value);
-            document.getElementById("circle").style.marginLeft = (value / 1100 * 100) + "%";
+            document.getElementById("circle").style.marginLeft = (value / 1023 * 100) + "%";
             sensor_number = 2;
             break;
     }
@@ -111,29 +98,24 @@ function insertData(chart_id, value) {
     // console.log(average(chart_id.data.datasets[0].data));
 }
 
-function changeLED(state, led_id) { // Change LED on message received
-    var state = (state.toString('utf-8') == 'true')
-    var div_id = "ledstatus" + led_id.toString();
-    // console.log('Received data LED for id %s : %s', led_id, state);
-
-    ledstate[led_id - 1] = state;
-
-    switch (state) {
-        case false: // LED Mati
-            document.getElementById(div_id).style.backgroundColor = "rgb(231, 76, 60)";
-            break;
-        case true: // LED Nyala
-            document.getElementById(div_id).style.backgroundColor = "rgb(46, 204, 113)";
-            break;
-        default: // Data Invalid
-            document.getElementById(div_id).style.backgroundColor = "white";
-    }
-}
-
-function changeLEDButton(led_id) {
-    var div_id = "ledstatus" + led_id;
-    client.publish("topic/" + div_id, (!ledstate[led_id - 1]).toString('utf-8'))
-}
+// function changeLED(state, led_id) { // Change LED on message received
+//     var state = (state.toString('utf-8') == 'true')
+//     var div_id = "ledstatus" + led_id.toString();
+//     // console.log('Received data LED for id %s : %s', led_id, state);
+//
+//     ledstate[led_id - 1] = state;
+//
+//     switch (state) {
+//         case false: // LED Mati
+//             document.getElementById(div_id).style.backgroundColor = "rgb(231, 76, 60)";
+//             break;
+//         case true: // LED Nyala
+//             document.getElementById(div_id).style.backgroundColor = "rgb(46, 204, 113)";
+//             break;
+//         default: // Data Invalid
+//             document.getElementById(div_id).style.backgroundColor = "white";
+//     }
+// }
 
 // -----------------------------------------------------------------------------
 

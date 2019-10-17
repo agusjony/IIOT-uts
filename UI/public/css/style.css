@@ -1,4 +1,4 @@
-html,body,main {
+html, body, main {
   background: #1c1c1c !important;
 }
 
@@ -8,15 +8,15 @@ main {
 }
 
 .nopadding {
-  padding:0 !important;
-  margin:0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 .carousel-item {
   width: 100%;
   height: 40%;
   overflow: auto;
-  margin-top:1%;
+  margin-top: 1%;
   /* padding-bottom: 10px; */
 }
 
@@ -68,7 +68,7 @@ main {
   display: inline;
 }
 
-.test{
+.test {
   border: 5px solid black;
   /* background-color: white; */
 }
@@ -125,24 +125,122 @@ main {
   height: 100%;
 }
 
-
-
-
 .ledstatus {
   width: 360px;
   margin: auto;
 }
 
 .indicators {
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
   text-align: center;
+  justify-content: center;
   line-height: 40px;
-  font-size: 10px;
+  font-size: 50px;
   border-style: solid;
   border-width: 2px;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  vertical-align: middle;
-  background-color: rgb(231, 76, 60);
+  width: 200px;
+  height: 200px;
+}
+
+label[for=ledstatus1] {
+  color: #1c1c1c;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 140px;
+  height: 300px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 130px;
+  width: 130px;
+  left: 5px;
+  bottom: 5px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked+.slider {
+  background-color: #2196F3;
+}
+
+input:focus+.slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked+.slider:before {
+  -webkit-transform: translateY(-160px);
+  -ms-transform: translateY(-160px);
+  transform: translateY(-160px);
+}
+
+.danger {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  background-color: white;
+  justify-content: center;
+  width: 100%;
+  color: black;
+  border-radius: 15px;
+}
+
+#thresh_value {
+  display: inline;
+  text-align: center;
+}
+
+#panel {
+  padding: 20px 0px;
+}
+
+#threshold_cont {
+  visibility: hidden;
+  margin-top: 5%;
+}
+
+.set_threshold {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  height: 100px;
+  color: white;
+}
+
+label[for=thresh] {
+  display: flex;
+  justify-content: center;
+  color: white;
+  background-color: #3f51b5;
+  border-radius: 5px 5px 0px 0px;
+  margin: 0;
 }
