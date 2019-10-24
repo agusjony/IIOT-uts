@@ -1,3 +1,9 @@
+// =============================================================================
+// This Js contains necessary functions that corresponds to 'mode' change in
+// index2.html page
+// =============================================================================
+
+// Get Required HTML Elements --------------------------------------------------
 var modeButton = document.querySelector('#modeButton'),
     container = document.querySelector('#panel'),
     led_cont = document.querySelectorAll('#led, #rgb'),
@@ -7,6 +13,7 @@ var modeButton = document.querySelector('#modeButton'),
     danger = document.querySelector('.danger');
 var threshold_val = 600;
 
+// Set Display Settings on various elements ------------------------------------
 modeButton.addEventListener( 'change', function() {
   if (modeButton.checked == true) { //Auto Mode
     client.publish('mode', 's1');

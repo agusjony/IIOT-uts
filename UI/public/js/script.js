@@ -1,17 +1,24 @@
-//  Tweakables
+// =============================================================================
+// This Js contains necessary functions that corresponds to
+// index.html page
+// =============================================================================
+
+//  Tweakables -----------------------------------------------------------------
 var maxData = 300;
 
-// Global Variables
+// Global Variables ------------------------------------------------------------
 // var ledstate = [false, false, false, false]
 // var dataDump = [];
 var sensor_average = [0, 0, 0];
 
+// Define Custom Functions -----------------------------------------------------
 const average = arr => arr.reduce((p, c) => p + c, 0) / arr.length;
 const varToString = varObj => Object.keys(varObj);
 
-// ----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// MQTT Setup ------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
-// MQTT Setup
 var client = mqtt.connect();
 
 client.on('connect', function() {
@@ -38,14 +45,16 @@ client.on('message', function(topic, message) {
     }
 })
 
-// ----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// Data Manipulations ----------------------------------------------------------
+// -----------------------------------------------------------------------------
 
+// Main functions to change values (val and average) and update charts
 function changeValue(value, value_id) {
     // Update HTML content
     //console.log('Received data VALUE for id %s : %s',value_id,value);
     value = parseFloat(value);
 
-    // Update chart
     switch (value_id) {
         case 'humidity':
             insertData(chart1, value);
@@ -70,7 +79,8 @@ function changeValue(value, value_id) {
 
 function insertData(chart_id, value) {
     var d = new Date();
-    if (chart_id.data.datasets[0].data.length > maxData) { //Limit number of displayed data at one instance
+    // Limit number of displayed data at one instance
+    if (chart_id.data.datasets[0].data.length > maxData) {
         chart_id.data.labels.shift();
         chart_id.data.datasets[0].data.shift();
         chart_id.data.labels.push(d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds());
@@ -79,9 +89,9 @@ function insertData(chart_id, value) {
         chart_id.data.labels.push(d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds());
         chart_id.data.datasets[0].data.push(value);
     }
-    chart_id.update();
+    chart_id.update(); // Update chart value
 
-    //update average value
+    // Update average value
     switch (chart_id) {
         case chart1:
             chart_number = 0;
@@ -118,7 +128,10 @@ function insertData(chart_id, value) {
 // }
 
 // -----------------------------------------------------------------------------
+// Create Charts ---------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
+// Function to create chart so i don't have to type it over and over again
 function createChart(canvas, label, color) {
     var ctx = document.getElementById(canvas).getContext('2d');
     var config = {
@@ -139,7 +152,7 @@ function createChart(canvas, label, color) {
             stacked: false,
             scales: {
                 yAxes: [{
-                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                    type: 'linear',
                     display: true,
                     position: 'left',
                     gridLines: {
@@ -164,10 +177,13 @@ function createChart(canvas, label, color) {
     return chart;
 }
 
+// Create charts
 var chart1 = createChart('canvas1', 'Humidity', '#3cba9f');
 var chart2 = createChart('canvas2', 'Temperature', '#c45850')
 var chart3 = createChart('canvas3', 'Brightness', '#6FADCF')
 
+// -----------------------------------------------------------------------------
+// Create Gauges ---------------------------------------------------------------
 // -----------------------------------------------------------------------------
 
 // Brightness Gauge

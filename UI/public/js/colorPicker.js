@@ -1,3 +1,12 @@
+// =============================================================================
+// This Js contains necessary functions that corresponds to color picker in
+// index2.html page
+// =============================================================================
+
+// Global Variables ------------------------------------------------------------
+var rgb_bool = true;
+
+// Get Required HTML Elements --------------------------------------------------
 var r = document.querySelector('#r'),
     g = document.querySelector('#g'),
     b = document.querySelector('#b'),
@@ -7,8 +16,7 @@ var r = document.querySelector('#r'),
     rgb_button = document.querySelector('#rgb_button'),
     labels = document.querySelectorAll('label[for=r], output[for=r], label[for=g], output[for=g], label[for=b], output[for=b]');
 
-var rgb_bool = true;
-
+// Function to set color of RGB LED --------------------------------------------
 function setColor(rgb) {
     switch (rgb) {
         case 'r':
@@ -27,6 +35,8 @@ function setColor(rgb) {
     rgb_button.style.backgroundColor = 'rgb(' + r.value + ',' + g.value + ',' + b.value + ')';
 }
 
+
+// Event listeners for sliders -------------------------------------------------
 r.addEventListener('change', function() {
     setColor('r');
     r_out.value = r.value;
@@ -57,6 +67,7 @@ b.addEventListener('input', function() {
     b_out.value = b.value;
 }, false);
 
+// Event Listener for RGB Button
 rgb_button.addEventListener('click', function() {
   rgb_bool = !rgb_bool;
   switch (rgb_bool) {

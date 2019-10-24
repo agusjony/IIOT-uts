@@ -5,15 +5,15 @@
 /*****************************************************************/
 
 /********************** PIN CONFIGURATION ************************/
-#define pinLED D5
-#define pinR D6
-#define pinG D7
-#define pinB D8
-#define DHTPIN D4
-#define supplyRGB D3
-#define supplyDHT D0
-#define pinLDR A0
-int pinButton[2] = {5, 4};
+#define pinLED D5 //Pin LED
+#define pinR D6 //Pin RGB Red
+#define pinG D7 //Pin RGB Green 
+#define pinB D8 //Pin RGB Blue
+#define DHTPIN D4 //Pin DHT
+#define supplyRGB D3 //Pin supply tegangan ke RGB
+#define supplyDHT D0 //Pin supply tegangan ke DHT
+#define pinLDR A0 //Pin input bacaan LDR
+int pinButton[2] = {5, 4}; //Pin push button untuk ON/OFF LED & RGB
 /*****************************************************************/
 
 /********************* VARIABEL WiFi & MQTT **********************/
@@ -31,42 +31,42 @@ DHT dht(DHTPIN, DHTTYPE);
 /*****************************************************************/
 
 /************************* VARIABEL GLOBAL ***********************/
-float input_temp[4] = {29, 29, 29, 29};
-float input_humidity[4] = {50, 50, 50, 50};
-float input_intensity[4] = {120, 120, 120, 120};
-float output_intensity;
-int buff_input = 3;
+float input_temp[4] = {29, 29, 29, 29}; //Ring buffer untuk nyimpen bacaan temperatur
+float input_humidity[4] = {50, 50, 50, 50}; //Ring buffer untuk nyimpen bacaan humidity
+float input_intensity[4] = {120, 120, 120, 120}; //Ring buffer untuk nyimpen bacaan intensity
+float output_intensity; //Intensitas yang sudah difilter
+int buff_input = 3; //Index untuk update ring buffer
 
-float filter_temperature[5] = {0.135, 0.225, 0.28, 0.135, 0.225};
-float filter_humidity[5] = {0.0506, 0.2294, 0.44, 0.0506, 0.2294};
-float filter_intensity[5] = {-0.0418, 0.1818, 0.72, -0.0418, 0.1818};
+float filter_temperature[5] = {0.135, 0.225, 0.28, 0.135, 0.225}; //Koefisien filter
+float filter_humidity[5] = {0.0506, 0.2294, 0.44, 0.0506, 0.2294}; //Koefisien filter
+float filter_intensity[5] = {-0.0418, 0.1818, 0.72, -0.0418, 0.1818}; //Koefisien filter
 
 int R = 1023;
 int G = 1023;
 int B = 1023;
 int mode_nyala = 0; // 0: Manual | 1: Automatic
-int threshold = 600; // Ambang tertentu (lux)
+int threshold = 600; // Ambang tertentu
 
 int last_state_led = 0;
 int last_state_RGB = 0;
-int state_led = 1;
-int state_RGB = 1;
-int current_state[2] = {0, 0};
-int previous_state[2] = {0, 0};
+int state_led = 1; //Kondisi LED; 1: Nyala 0: Mati
+int state_RGB = 1; //Kondisi RGB; 1: Nyala 0: Mati
+int current_state[2] = {0, 0}; //Untuk mendeteksi perubahan PB
+int previous_state[2] = {0, 0}; //Untuk mendeteksi perubahan PB
 /*****************************************************************/
 
 /************************ DEKLARASI FUNGSI ***********************/
 void setup_wifi();
 void reconnect();
 void callback(char* topic, byte* payload, unsigned int length);
-void sample_publish();
-int update_buff_index(int buff, int max_buff);
-float filtering(int update_index, float new_value, float var[], int length_array, float filter_coeff[], int length_filter);
+void sample_publish(); //Prosedur untuk publish temperatur, intensity, dan humidity
+int update_buff_index(int buff, int max_buff); //Fungsi untuk mengupdate index buffer
+float filtering(int update_index, float new_value, float var[], int length_array, float filter_coeff[], int length_filter); //Fungsi untuk memfilter
 
-int button_trigger();
-void lamp_setting();
-void pubfloat(char* topic, float var);
-void pubint(char* topic, int var);
+int button_trigger(); //Fungsi untuk menentukan apakah PB sedang dipencet atau tidak
+void lamp_setting(); //Prosedur mengatur nyala LED & RGB
+void pubfloat(char* topic, float var); //Prosedur untuk publish float ke MQTT
+void pubint(char* topic, int var); //Prosedur untuk publish int ke MQTT
 /*****************************************************************/
 
 void setup() {
@@ -81,7 +81,7 @@ void setup() {
   pinMode(pinButton[0], INPUT);
   pinMode(pinButton[1], INPUT);
 
-  // Initialize
+  // Initialize (Matiin LED dan RGB)
   digitalWrite(supplyRGB, LOW);
   digitalWrite(pinLED, LOW);
   analogWrite(pinR, 0);
@@ -121,15 +121,18 @@ void loop() {
   }
   client.loop();
 
+  /********* PUBLISH KE MQTT ********/
   unsigned long TIME = millis();
-  if (TIME - LAST_TIME >= 1000){
+  if (TIME - LAST_TIME >= 1000){ //Untuk mengatur sampling time : 1000 ms
     Serial.print("Sampling rate: ");
     Serial.print(TIME - LAST_TIME);
     Serial.println(" ms");
     sample_publish();
     LAST_TIME = TIME;
   }
+  /*********************************/
 
+  /********* Automatis/Manual ********/
   if (mode_nyala == 1){ // Mode otomatis
     if (output_intensity <= threshold){
       state_led = true;
@@ -158,7 +161,9 @@ void loop() {
         break;
     }
   }
+  /*********************************/
 
+  /******b ON/OFF LED & RGB *********/
   lamp_setting();
   
 }
@@ -199,10 +204,10 @@ void reconnect() {
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");
+      Serial.println(" try again in 2 seconds");
       
-      // Wait 5 seconds before retrying
-      delay(1000);
+      // Wait 2 seconds before retrying
+      delay(2000);
     }
   }
 }
@@ -219,6 +224,13 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   int message = string_message.toInt();
 
+  /************* MEMPROSES DATA YANG DIKRIM DARI MQTT ******************/
+  /* Nama Topic Subscribe:
+    mode : mengatur mode automatic/manual   
+    threshold : mengatur ambang batas
+    rgb : mengatur nilai R G & B
+    led : menyala atau mematikan LED pada mode manual
+   */
   if(strcmp(topic, "mode") == 0){
     mode_nyala = message;
     Serial.print("Mode Kerja: ");
@@ -249,7 +261,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
           break;
       }
   }
-  else if(strcmp(topic, "led") == 0){
+  else if(strcmp(topic, "led") == 0){ //Jika Mode automatic --> State LED tidak ada diupdate (gak ngefek kalau dinyala-matiin lewat UI
     if(!mode_nyala){
       state_led = !state_led;
     }
@@ -258,7 +270,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   else{}
 }
 
-void sample_publish(){
+void sample_publish(){ // Publish bacaan humidity, temperature, dan intensity ke MQTT
   float h = dht.readHumidity();  
   float t = dht.readTemperature();
   float ldr = analogRead(pinLDR);
@@ -306,7 +318,7 @@ void sample_publish(){
   pubfloat("intensity", output_intensity);
 }
 
-int update_buff_index(int buff, int max_buff){
+int update_buff_index(int buff, int max_buff){ // Update buff index untuk kepentingan buffer
   int result = buff + 1;
   if (result >= max_buff){
     result = 0;
@@ -314,7 +326,7 @@ int update_buff_index(int buff, int max_buff){
   return result;
 }
 
-float filtering(int update_index, float new_value, float var[], int length_array, float filter_coeff[], int length_filter){
+float filtering(int update_index, float new_value, float var[], int length_array, float filter_coeff[], int length_filter){ // Algoritma filter digital
   int buff = update_index;
   float result = new_value * filter_coeff[0];
   for(int i =1; i <= length_array; i++){
@@ -327,7 +339,7 @@ float filtering(int update_index, float new_value, float var[], int length_array
   return result;
 }
 
-int button_trigger () {
+int button_trigger () { // Mendeteksi apakah ada TRIGGER yang terdeteksi atau tidak
   int i;
   for (i = 0; i < 2; i++){
     current_state[i] = digitalRead(pinButton[i]);
@@ -341,7 +353,9 @@ int button_trigger () {
   return i;
 }
 
-void lamp_setting(){
+void lamp_setting(){ // ON/OFF LED & RGB
+  // Di sini, LED & RGB dinyala/matikan HANYA saat ada perbuahan State
+  // Jadi, Wemos tidak selalu mengirim sinyal ulang ke LED & RGB
   if(state_RGB != last_state_RGB){
     pubint("indicator_rgb", state_RGB);
     last_state_RGB = state_RGB;
