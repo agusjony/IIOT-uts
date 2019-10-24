@@ -18,7 +18,7 @@ var server = new mosca.Server({
         static: './public/'
     },
     persistence: {
-        factory: mosca.persistence.Memory
+        factory: mosca.persistence.Memory // so i can use retain function
     },
 });
 
@@ -31,16 +31,17 @@ server.on('ready', function() {
     console.log('')
 })
 
-// Triggered when a client is connected
+// Triggered when a client connected
 server.on('clientConnected', function(client) {
     console.log('BROKER : client connected (%s)', client.id)
 })
 
+// Triggered when a client disconnected
 server.on('clientDisconnected', function(client) {
     console.log('BROKER : client disconnected (%s)', client.id)
 })
 
-// Triggered when a message is received
+// Triggered when a message received
 server.on('published', function(packet, client) {
     console.log('MESSAGE : %s', packet.payload.toString('utf-8'))
 })
