@@ -8,7 +8,8 @@ Demonstrasi yang kami buat juga dilengkapi filter sinyal untuk mereduksi noise d
 - Prasetyo Wibowo Laksono S. - 13316017	(UI & Web Developing)
 - Fadillah Adamsyah Ma'ani - 13316046	(Electrical, Programming)
 
-### List komponen elektrik IoT Node:
+## Component List
+List komponen elektrik IoT Node:
 - 1 buah Development Board Wemos D1 Mini Pro
 - 1 buah Sensor DHT22
 - 1 buah LDR
@@ -19,7 +20,9 @@ Demonstrasi yang kami buat juga dilengkapi filter sinyal untuk mereduksi noise d
 - 2 buah Trimpot
 - Beberapa kabel Jumper
 
-### [IoT Node] --> [IoT Server/Broker] <-- [IoT Client]
+## How To Use
+
+[IoT Node] --> [IoT Server/Broker] <-- [IoT Client]
 
 1. IoT Server/Broker <br>
 -- Sambungkan PC ke Wifi yang akan dipakai <br>
